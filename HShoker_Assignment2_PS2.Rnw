@@ -1,0 +1,129 @@
+\documentclass{article}
+
+\title { DATA605 Assignment2}
+\author { Harpreet Shoker}
+
+\usepackage{Sweave}
+\usepackage{amsmath}
+\usepackage{listings}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+(1) \textbf{Show that in general:\[A^{T}A \neq AA^{T}\]
+Proof and demonstration}
+\[
+A=
+  \begin{bmatrix}
+    a & c  \\
+    b & d
+  \end{bmatrix}
+\]
+
+\[
+So   A^{T}=
+  \begin{bmatrix}
+  a & c \\
+  b & d
+  \end{bmatrix}
+\]
+
+Now we need to calculate \[ A . A^{T} \]
+
+ \[
+   \begin{bmatrix}
+   a^2+b^2 & ac+bd \\
+   ac+bd & c^2+d^2
+   \end{bmatrix}
+\]
+
+Now calculating \[ A^{T} . A \]
+
+\[
+   \begin{bmatrix}
+   a^2+c^2 & bc+cd \\
+   ab+cd  & b^2+d^2s
+   \end{bmatrix}
+\]
+
+From the above two results we can say \[A.A^{T} \neq A^{T}.A\]
+Here is an example to prove the above
+
+\begin{abstract}
+<<Test>>=
+A <- matrix(c(1,2,3,4),nrow = 2,ncol = 2)
+A
+A_T <- t(A)
+A_T
+X <- A %*% A_T
+X
+Y <- A_T %*% A
+Y
+@
+\end{abstract}
+
+From the above example again we can say \[A.A^{T} \neq A^{T}.A\]
+
+(2) \textbf{For a special type of square matrix A, \[A^{T}A \neq AA^{T}\]
+Under what conditions could this be true? }
+
+For the above equation to be satisfied one is matrix could be identity matrix and other could be matrix should be symmetric.We will prove here using symmetric matrix
+
+\begin{abstract}
+<<Tesst1>>=
+A <- matrix(c(1,7,3,7,4,-5,3,-5,6),nrow = 3,ncol = 3)
+A
+A_T <- t(A)
+A_T
+X <- A %*% A_T
+X
+Y <- A_T %*% A
+Y
+@
+\end{abstract}
+
+From the above example of symmetric matrix again we can say \[A.A^{T} is equal to A^{T}.A\]
+
+(3) \textbf{Matrix factorization is a very important problem. There are supercomputers built just to do matrix factorizations. Every second you are on an airplane, matrices are being
+factorized. Radars that track flights use a technique called Kalman filtering. At the heart
+of Kalman Filtering is a Matrix Factorization operation. Kalman Filters are solving linear
+systems of equations when they track your flight using radars.
+Write an R function to factorize a square matrix A into LU or LDU, whichever you
+prefer
+}
+\begin{abstract}
+<<Tesst4>>=
+Matrix_Factorization <- function(A){
+  if(nrow(A) != ncol(A)){ #checking whether matrix is square or not
+    stop("Matrix is not a square matrix")
+  }
+  L <- diag(nrow(A)) # Generates the lower triangular matrix
+  for (i in 2:nrow(A)){ # i starts from row 2
+    for (j in 1:(i-1)){ # j Columnns will not go through the last column
+      if (A[i,j] == 0){
+        stop("Factorization cannot be done as 0 in pivot")
+      }
+      L[i,j] <- (A[i,j]/A[j,j]) # calculating L matrix values
+      A[i,] <- A[i,] - (L[i,j] * A[j,]) #  Then treating A as U
+
+    }
+  }
+  print("Lower matrix:")
+  print(L)
+  print("Upper matrix:")
+  print(A)
+}
+
+
+m3 <- matrix(c(2,5,9,2,9,1,3,10,2), ncol = 3, nrow=3)
+Matrix_Factorization(m3)
+m2 <- matrix(c(1,2,3,4,5,6),nrow = 3,ncol = 2)
+Matrix_Factorization(m2)
+@
+\end{abstract}
+
+\end{document}
